@@ -1,0 +1,3 @@
+#ADC enable 
+1. To enable ADC first set the ADC bit in APBxEnr peripheral register, add RCC APBxEnr offset to RCC base address, then set the ADCx enable bit.
+2. Then add ADC control register address to ADC base address and set the enable bit
