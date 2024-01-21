@@ -53,3 +53,8 @@ int main(void)
 	/* Loop forever */
 	for(;;);
 }
+
+void I2C1_EV_IRQHandler(void)
+{
+
+}
