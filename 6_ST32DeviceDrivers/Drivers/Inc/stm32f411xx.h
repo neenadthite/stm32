@@ -8,6 +8,8 @@
 #ifndef INC_STM32F411XX_H_
 #define INC_STM32F411XX_H_
 
+#include <stdint.h>
+
 #define __vo volatile
 /*
  *  base addresses of Flash and SRAM memories
@@ -38,10 +40,7 @@
 #define GPIOC_BASEADDR			(AHB1PERIPH_BASE + 0x0800)
 #define GPIOD_BASEADDR			(AHB1PERIPH_BASE + 0x0C00)
 #define GPIOE_BASEADDR			(AHB1PERIPH_BASE + 0x1000)
-#define GPIOF_BASEADDR			(AHB1PERIPH_BASE + 0x1400)
-#define GPIOG_BASEADDR			(AHB1PERIPH_BASE + 0x1800)
 #define GPIOH_BASEADDR			(AHB1PERIPH_BASE + 0x1C00)
-#define GPIOI_BASEADDR			(AHB1PERIPH_BASE + 0x2000)
 
 /*
  * Base address for peripherals located on APB1 bus from Memory Map section
@@ -92,27 +91,30 @@ typedef struct {
 	__vo uint32_t PLLCFGR;
 	__vo uint32_t CFGR;
 	__vo uint32_t CIR;
-	__vo uint32_t AFB1RSTR;
+	__vo uint32_t AHB1RSTR;
 	__vo uint32_t AHB2RSTR;
 	uint32_t RESERVED0[2];
 	__vo uint32_t APB1RSTR;
 	__vo uint32_t APB2RSTR;
 	uint32_t RESERVED1[2];
-	__vo uint32_t RCC_AHB1ENR;
-	__vo uint32_t RCC_AHB2ENR;
+	__vo uint32_t AHB1ENR;
+	__vo uint32_t AHB2ENR;
 	uint32_t RESERVED2[2];
 	__vo uint32_t APB1ENR;
 	__vo uint32_t APB2ENR;
-	__vo uint32_t RESERVED3[2];
+	uint32_t RESERVED3[2];
 	__vo uint32_t AHB1LPENR;
 	__vo uint32_t AHB2LPENR;
-	uint32_t RESERVED3[2];
+	uint32_t RESERVED4[2];
+	__vo uint32_t APB1LPENR;
+	__vo uint32_t APB2LPENR;
+	uint32_t RESERVED5[2];
 	__vo uint32_t BDCR;
 	__vo uint32_t CSR;
-	__vo uint32_t RESERVED4[2];
+	uint32_t RESERVED6[2];
 	__vo uint32_t SSCGR;
 	__vo uint32_t PLLI2SCFGR;
-	uint32_t RESERVED5;
+	uint32_t RESERVED7;
 	__vo uint32_t DCKCFGR;
 }RCC_RegDef_t;
 
@@ -135,20 +137,91 @@ typedef struct {
 
 /*
  * Clock Enable Macros for GPIOx peripherals
- * TODO: Complete for all GPIO pins
  */
 
-#define GPIOA_PCLK_EN() 	( RCC->AHB1ENR |= (1<<0))
-#define GPIOB_PCLK_EN() 	( RCC->AHB1ENR |= (1<<1))
+#define GPIOA_PCLK_EN() 	(RCC->AHB1ENR |= (1<<0))
+#define GPIOB_PCLK_EN() 	(RCC->AHB1ENR |= (1<<1))
+#define GPIOC_PCLK_EN() 	(RCC->AHB1ENR |= (1<<2))
+#define GPIOD_PCLK_EN() 	(RCC->AHB1ENR |= (1<<3))
+#define GPIOE_PCLK_EN() 	(RCC->AHB1ENR |= (1<<4))
+#define GPIOH_PCLK_EN() 	(RCC->AHB1ENR |= (1<<7))
 
+/*
+ * Clock Enable Macros for I2Cx peripherals
+ */
+
+#define I2C1_PCLK_EN() 	(RCC->APB1ENR |= (1<<21))
+#define I2C2_PCLK_EN() 	(RCC->APB1ENR |= (1<<22))
+#define I2C3_PCLK_EN() 	(RCC->APB1ENR |= (1<<23))
 
 
 /*
- * Clock Enable Macros for 	I2Cx peripherals
+ * Clock Enable Macros for SPIx peripherals
  */
 
-#define I2C1_PCLK_EN() 	( RCC->APB1ENR |= (1<<21))
-#define I2C2_PCLK_EN() 	( RCC->APB1ENR |= (1<<22))
-#define I2C3_PCLK_EN() 	( RCC->APB1ENR |= (1<<23))
+#define SPI1_PCLK_EN() (RCC->APB2ENR |= (1<<12))
+#define SPI2_PCLK_EN() (RCC->APB1ENR |= (1<<14))
+#define SPI3_PCLK_EN() (RCC->APB1ENR |= (1<<15))
+#define SPI4_PCLK_EN() (RCC->APB2ENR |= (1<<13))
+#define SPI5_PCLK_EN() (RCC->APB2ENR |= (1<<20))
+
+
+/*
+ * Clock Enable Macros for UARTx peripherals
+ */
+
+#define USART1_PCLK_EN() (RCC->APB2ENR |= (1<<4))
+#define USART2_PCLK_EN() (RCC->APB1ENR |= (1<<17))
+#define USART6_PCLK_EN() (RCC->APB2ENR |= (1<<5))
+
+
+/*
+ * Clock Disable Macros for GPIOx peripherals
+ */
+
+#define GPIOA_PCLK_DIS() 	(RCC->AHB1ENR &= ~(1<<0))
+#define GPIOB_PCLK_DIS() 	(RCC->AHB1ENR &= ~(1<<1))
+#define GPIOC_PCLK_DIS() 	(RCC->AHB1ENR &= ~(1<<2))
+#define GPIOD_PCLK_DIS() 	(RCC->AHB1ENR &= ~(1<<3))
+#define GPIOE_PCLK_DIS() 	(RCC->AHB1ENR &= ~(1<<4))
+#define GPIOH_PCLK_DIS() 	(RCC->AHB1ENR &= ~(1<<7))
+
+/*
+ * Clock Disable Macros for I2Cx peripherals
+ */
+
+#define I2C1_PCLK_DIS() 	(RCC->APB1ENR &= ~(1<<21))
+#define I2C2_PCLK_DIS() 	(RCC->APB1ENR &= ~(1<<22))
+#define I2C3_PCLK_DIS() 	(RCC->APB1ENR &= ~(1<<23))
+
+
+/*
+ * Clock Disable Macros for SPIx peripherals
+ */
+
+#define SPI1_PCLK_DIS() (RCC->APB2ENR &= ~(1<<12))
+#define SPI2_PCLK_DIS() (RCC->APB1ENR &= ~(1<<14))
+#define SPI3_PCLK_DIS() (RCC->APB1ENR &= ~(1<<15))
+#define SPI4_PCLK_DIS() (RCC->APB2ENR &= ~(1<<13))
+#define SPI5_PCLK_DIS() (RCC->APB2ENR &= ~(1<<20))
+
+
+/*
+ * Clock Disable Macros for UARTx peripherals
+ */
+
+#define USART1_PCLK_DIS() (RCC->APB2ENR &= ~(1<<4))
+#define USART2_PCLK_DIS() (RCC->APB1ENR &= ~(1<<17))
+#define USART6_PCLK_DIS() (RCC->APB2ENR &= ~(1<<5))
+
+
+//some generic macros
+
+#define ENABLE 			1
+#define DISABLE 		0
+#define SET 			ENABLE
+#define RESET			DISABLE
+#define GPIO_PIN_SET	SET
+#define GPIO_PIN_RESET  RESET
 
 #endif /* INC_STM32F411XX_H_ */
